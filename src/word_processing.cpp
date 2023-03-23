@@ -60,8 +60,7 @@ tokenize(std::string fname, std::unordered_set<std::string> const &stopwords) {
             ret.emplace_back(ws.begin(), ws.end());
         }
     }
-    std::erase_if(ret, [stopwords](std::string const &str) -> bool {
-        return stopwords.contains(str);
-    });
+    std::erase_if(ret, std::bind(&std::unordered_set<std::string>::contains,
+                                 stopwords, std::placeholders::_1));
     return ret;
 }

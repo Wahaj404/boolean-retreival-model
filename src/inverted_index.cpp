@@ -8,8 +8,8 @@
 #include <sstream>
 
 std::size_t InvertedIndex::hash(std::vector<std::string> const &fnames) {
-    constexpr std::size_t prime = 31;
-    std::size_t result = 1;
+    constexpr auto prime = 31UL;
+    auto result = 1UL;
     std::hash<std::string> hasher;
     for (auto const &fname : fnames) {
         result = result * prime + hasher(fname);
@@ -27,7 +27,7 @@ std::vector<std::string> InvertedIndex::parseQuery(std::string const &str) {
     std::stringstream ss(str);
     std::string token;
     while (ss >> token) {
-        std::size_t c = 0, d = 0;
+        auto c = 0UL, d = 0UL;
         // count opening brackets
         while (c < token.length() && token.at(c) == '(') {
             ++c;
@@ -37,15 +37,11 @@ std::vector<std::string> InvertedIndex::parseQuery(std::string const &str) {
             ++d;
         }
         // add opening brackets to list
-        for (std::size_t i = 0; i < c; ++i) {
-            ret.push_back("(");
-        }
+        ret.resize(ret.size() + c, "(");
         // add the token to the list - after removing any brackets
         ret.push_back(token.substr(c, token.length() - d));
         // add closing brackets to list
-        for (std::size_t i = 0; i < d; ++i) {
-            ret.push_back(")");
-        }
+        ret.resize(ret.size() + d, "(");
     }
     return ret;
 }
@@ -61,7 +57,7 @@ InvertedIndex::incidenceIndex(std::vector<std::string> const &fnames) {
     for (auto const &fname : fnames) {
         auto const docID = nextDocID(fname);
         auto tokens = tokenize(fname, stopwords);
-        for (std::size_t i = 0; i < tokens.size(); ++i) {
+        for (auto i = 0UL; i < tokens.size(); ++i) {
             incs.emplace_back(tokens[i], docID, i);
         }
     }
@@ -77,12 +73,12 @@ bool InvertedIndex::read(std::string const &fname) {
     }
     std::size_t n;
     file >> n;
-    docIDS = std::vector<std::string>(n);
+    docIDS.assign(n, {});
     for (auto &docname : docIDS) {
         file >> docname;
     }
     file >> n;
-    posts = std::vector<PostingList>(n);
+    posts.assign(n, {});
     for (auto &pl : posts) {
         file >> pl;
     }
@@ -111,7 +107,7 @@ InvertedIndex::InvertedIndex(std::vector<std::string> const &fnames) {
     }
 
     auto incs = incidenceIndex(fnames);
-    for (std::size_t i = 0; i < incs.size();) {
+    for (auto i = 0UL; i < incs.size();) {
         PostingList pl(incs[i].word());
         while (i < incs.size() && pl.word() == incs[i].word()) {
             Occurrence occ(incs[i].docID());
@@ -127,13 +123,12 @@ InvertedIndex::InvertedIndex(std::vector<std::string> const &fnames) {
 }
 
 DocumentSet InvertedIndex::documentSetOf(std::string const &term) const {
-    auto it = std::lower_bound(posts.begin(), posts.end(), term);
-    if (it == posts.end()) {
-        return {};
-    }
     DocumentSet res;
-    for (auto const &occur : it->occurrences()) {
-        res.add(occur.docID());
+    if (auto it = std::lower_bound(posts.begin(), posts.end(), term);
+        it != posts.end()) {
+        for (auto const &occur : it->occurrences()) {
+            res.add(occur.docID());
+        }
     }
     return res;
 }
@@ -152,7 +147,7 @@ DocumentSet InvertedIndex::positionalIntersect(std::string const &t1,
 
     auto left = postingListOf(t1).occurrences(),
          right = postingListOf(t2).occurrences();
-    std::size_t i = 0, j = 0;
+    auto i = 0UL, j = 0UL;
     std::set<std::size_t> ans;
     while (i < left.size() && j < right.size()) {
         if (left[i].docID() < right[j].docID()) {
@@ -161,7 +156,7 @@ DocumentSet InvertedIndex::positionalIntersect(std::string const &t1,
             ++j;
         } else {
             auto &p1 = left[i], &p2 = right[j];
-            std::size_t ii = 0, jj = 0;
+            auto ii = 0UL, jj = 0UL;
             std::vector<std::size_t> L;
             while (ii < p1.size()) {
                 while (jj < p2.size()) {

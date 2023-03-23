@@ -29,7 +29,7 @@ bool match(std::vector<std::size_t> const &res,
     if (res.size() != ans.size()) {
         return false;
     }
-    for (std::size_t i = 0; i < res.size(); ++i) {
+    for (auto i = 0UL; i < res.size(); ++i) {
         if (res[i] + 1 != ans[i]) {
             return false;
         }
@@ -39,9 +39,8 @@ bool match(std::vector<std::size_t> const &res,
 
 bool runTests(std::initializer_list<QueryTest> const &tests,
               InvertedIndex const &idx) {
-    std::size_t passed = 0;
+    auto passed = 0UL;
     for (auto test : tests) {
-        assert(test(idx));
         passed += test(idx);
     }
     return passed == tests.size();
@@ -60,9 +59,8 @@ bool self(InvertedIndex const &idx) {
 int main(int argc, char *argv[]) {
     std::vector<std::string> fnames(argv + 1, argv + argc);
     auto cut = [](std::string const &str) -> std::string {
-        int i = str.find_first_of("/") + 1;
-        int j = str.find_last_of(".");
-        return str.substr(i, j - i);
+        auto i = str.find_first_of("/") + 1;
+        return str.substr(i, str.find_last_of(".") - i);
     };
     std::sort(fnames.begin(), fnames.end(),
               [cut](std::string const &a, std::string const &b) -> bool {
@@ -77,8 +75,7 @@ int main(int argc, char *argv[]) {
 bool gold1(InvertedIndex const &idx) {
     std::string q = "image AND restoration";
     std::vector<std::size_t> ans = {359, 375};
-    auto res = idx.answerAsDocIDs(q);
-    return match(res.getIDs(), ans);
+    return match(idx.answerAsDocIDs(q).getIDs(), ans);
 }
 
 bool gold2(InvertedIndex const &idx) {
@@ -88,22 +85,19 @@ bool gold2(InvertedIndex const &idx) {
         267, 272, 273, 278, 279, 281, 325, 333, 345, 346, 347, 348,
         352, 357, 358, 360, 362, 371, 373, 374, 375, 380, 381, 382,
         396, 397, 401, 404, 405, 415, 421, 432, 444};
-    auto res = idx.answerAsDocIDs(q);
-    return match(res.getIDs(), ans);
+    return match(idx.answerAsDocIDs(q).getIDs(), ans);
 }
 
 bool gold3(InvertedIndex const &idx) {
     std::string q = "autoencoders";
     std::vector<std::size_t> ans = {187, 273, 279, 325, 333, 405};
-    auto res = idx.answerAsDocIDs(q);
-    return match(res.getIDs(), ans);
+    return match(idx.answerAsDocIDs(q).getIDs(), ans);
 }
 
 bool gold4(InvertedIndex const &idx) {
     std::string q = "temporal AND deep AND learning";
     std::vector<std::size_t> ans = {279, 358, 373, 405};
-    auto res = idx.answerAsDocIDs(q);
-    return match(res.getIDs(), ans);
+    return match(idx.answerAsDocIDs(q).getIDs(), ans);
 }
 
 bool gold5(InvertedIndex const &idx) {
@@ -111,15 +105,13 @@ bool gold5(InvertedIndex const &idx) {
     std::vector<std::size_t> ans = {
         40,  54,  110, 111, 112, 113, 158, 163, 173, 180, 181, 202, 220, 237,
         238, 239, 240, 258, 277, 283, 295, 305, 350, 405, 421, 437, 438, 445};
-    auto res = idx.answerAsDocIDs(q);
-    return match(res.getIDs(), ans);
+    return match(idx.answerAsDocIDs(q).getIDs(), ans);
 }
 
 bool gold6(InvertedIndex const &idx) {
     std::string q = "time AND series AND classification";
     std::vector<std::size_t> ans = {40, 237, 283, 445};
-    auto res = idx.answerAsDocIDs(q);
-    return match(res.getIDs(), ans);
+    return match(idx.answerAsDocIDs(q).getIDs(), ans);
 }
 
 bool gold7(InvertedIndex const &idx) {
@@ -137,8 +129,7 @@ bool gold7(InvertedIndex const &idx) {
         352, 353, 354, 357, 363, 369, 371, 375, 377, 378, 382, 384, 385, 386,
         387, 395, 397, 404, 405, 408, 420, 421, 424, 425, 427, 432, 437, 438,
         439, 442, 445};
-    auto res = idx.answerAsDocIDs(q);
-    return match(res.getIDs(), ans);
+    return match(idx.answerAsDocIDs(q).getIDs(), ans);
 }
 
 bool gold8(InvertedIndex const &idx) {
@@ -148,36 +139,31 @@ bool gold8(InvertedIndex const &idx) {
         127, 139, 145, 148, 155, 180, 186, 189, 194, 201, 209, 214, 216,
         230, 231, 234, 238, 279, 280, 288, 326, 343, 350, 351, 368, 369,
         383, 394, 406, 412, 413, 424, 425, 429, 446, 447};
-    auto res = idx.answerAsDocIDs(q);
-    return match(res.getIDs(), ans);
+    return match(idx.answerAsDocIDs(q).getIDs(), ans);
 }
 
 bool gold9(InvertedIndex const &idx) {
     std::string q = "pattern AND clustering";
     std::vector<std::size_t> ans = {40, 73, 180, 216, 326, 350, 351, 413, 446};
-    auto res = idx.answerAsDocIDs(q);
-    return match(res.getIDs(), ans);
+    return match(idx.answerAsDocIDs(q).getIDs(), ans);
 }
 
 bool gold10(InvertedIndex const &idx) {
     std::string q = "pattern AND clustering AND heart";
     std::vector<std::size_t> ans = {73};
-    auto res = idx.answerAsDocIDs(q);
-    return match(res.getIDs(), ans);
+    return match(idx.answerAsDocIDs(q).getIDs(), ans);
 }
 
 bool gold11(InvertedIndex const &idx) {
     std::string q = "neural information /2";
     std::vector<std::size_t> ans = {26};
-    auto res = idx.answerAsDocIDs(q);
-    return match(res.getIDs(), ans);
+    return match(idx.answerAsDocIDs(q).getIDs(), ans);
 }
 
 bool gold12(InvertedIndex const &idx) {
     std::string q = "feature track /5";
     std::vector<std::size_t> ans = {13, 212};
-    auto res = idx.answerAsDocIDs(q);
-    return match(res.getIDs(), ans);
+    return match(idx.answerAsDocIDs(q).getIDs(), ans);
 }
 
 bool self1(InvertedIndex const &idx) {
@@ -215,8 +201,7 @@ bool self1(InvertedIndex const &idx) {
         415, 416, 417, 418, 419, 420, 421, 422, 423, 424, 425, 426, 427, 428,
         429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439, 440, 441, 442,
         443, 444, 445, 447, 448};
-    auto res = idx.answerAsDocIDs(q);
-    return match(res.getIDs(), ans);
+    return match(idx.answerAsDocIDs(q).getIDs(), ans);
 }
 
 bool self2(InvertedIndex const &idx) {
@@ -251,8 +236,7 @@ bool self2(InvertedIndex const &idx) {
         406, 407, 408, 409, 410, 411, 412, 413, 414, 416, 417, 418, 419, 420,
         422, 423, 424, 425, 426, 427, 428, 429, 430, 431, 433, 434, 435, 436,
         437, 438, 439, 440, 441, 442, 443, 445, 446, 447, 448};
-    auto res = idx.answerAsDocIDs(q);
-    return match(res.getIDs(), ans);
+    return match(idx.answerAsDocIDs(q).getIDs(), ans);
 }
 
 bool self3(InvertedIndex const &idx) {

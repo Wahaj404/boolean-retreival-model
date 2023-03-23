@@ -12,9 +12,8 @@ bool Incidence::operator<(Incidence const &other) const {
     if (res == std::strong_ordering::equal) {
         return docID_ < other.docID_ ||
                (docID_ == other.docID_ && pos_ < other.pos_);
-    } else {
-        return res == std::strong_ordering::less;
     }
+    return res == std::strong_ordering::less;
 }
 
 std::string const &Incidence::word() const {

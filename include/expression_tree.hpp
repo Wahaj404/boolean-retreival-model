@@ -16,10 +16,6 @@ class ExpressionTree {
         std::shared_ptr<Node> left;
         std::shared_ptr<Node> right;
 
-        // Node(std::string const &val);
-
-        // Node(std::string const &val, std::shared_ptr<Node> left);
-
         Node(std::string const &val, std::shared_ptr<Node> left = nullptr,
              std::shared_ptr<Node> right = nullptr);
     };

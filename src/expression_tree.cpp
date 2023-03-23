@@ -1,12 +1,5 @@
 #include "expression_tree.hpp"
 
-// ExpressionTree::Node::Node(std::string const &val) :
-//     val(val), left(nullptr), right(nullptr) {}
-
-// ExpressionTree::Node::Node(std::string const &val, std::shared_ptr<Node>
-// left) :
-//     val(val), left(left), right(nullptr) {}
-
 ExpressionTree::Node::Node(std::string const &val, std::shared_ptr<Node> left,
                            std::shared_ptr<Node> right) :
     val(val),
@@ -89,23 +82,19 @@ DocumentSet ExpressionTree::evaluate(std::shared_ptr<Node> const &cur,
                                      InvertedIndex const &index) const {
     if (cur != nullptr) {
         if (cur->val == "NOT") {
-            auto res = !evaluate(cur->left, index);
-            return res;
-        } else if (cur->val == "AND") {
-            auto res = evaluate(cur->left, index) & evaluate(cur->right, index);
-            return res;
-        } else if (cur->val == "OR") {
-            auto res = evaluate(cur->left, index) | evaluate(cur->right, index);
-            return res;
-        } else if (cur->val.front() == '/') {
-            auto res =
-                index.positionalIntersect(cur->left->val, cur->right->val,
-                                          std::stoi(cur->val.substr(1)) + 1);
-            return res;
-        } else {
-            auto res = index.documentSetOf(cur->val);
-            return res;
+            return !evaluate(cur->left, index);
         }
+        if (cur->val == "AND") {
+            return evaluate(cur->left, index) & evaluate(cur->right, index);
+        }
+        if (cur->val == "OR") {
+            return evaluate(cur->left, index) | evaluate(cur->right, index);
+        }
+        if (cur->val.front() == '/') {
+            return index.positionalIntersect(cur->left->val, cur->right->val,
+                                             std::stoi(cur->val.substr(1)) + 1);
+        }
+        return index.documentSetOf(cur->val);
     }
     return {};
 }

@@ -29,7 +29,7 @@ DocumentSet DocumentSet::operator!() const {
 DocumentSet DocumentSet::operator&(DocumentSet const &other) const {
     DocumentSet res;
     auto &left = docIDs, &right = other.docIDs;
-    for (std::size_t i = 0, j = 0; i < left.size() && j < right.size();) {
+    for (auto i = 0UL, j = 0UL; i < left.size() && j < right.size();) {
         if (left[i] < right[j]) {
             ++i;
         } else if (left[i] > right[j]) {
@@ -46,7 +46,7 @@ DocumentSet DocumentSet::operator&(DocumentSet const &other) const {
 DocumentSet DocumentSet::operator|(DocumentSet const &other) const {
     DocumentSet res;
     auto &left = docIDs, &right = other.docIDs;
-    std::size_t i = 0, j = 0;
+    auto i = 0UL, j = 0UL;
     while (i < left.size() && j < right.size()) {
         if (left[i] < right[j]) {
             res.add(left[i++]);
@@ -66,7 +66,7 @@ DocumentSet DocumentSet::operator|(DocumentSet const &other) const {
 DocumentSet DocumentSet::operator-(DocumentSet const &other) const {
     DocumentSet res;
     auto &left = docIDs, &right = other.docIDs;
-    std::size_t i = 0, j = 0;
+    auto i = 0UL, j = 0UL;
     while (i < left.size() && j < right.size()) {
         if (left[i] < right[j]) {
             res.add(left[i++]);

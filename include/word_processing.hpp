@@ -5,8 +5,8 @@
 #include <unordered_set>
 #include <vector>
 
-constexpr char sep = ':';
-constexpr char newl = '\n';
+constexpr auto sep = ':';
+constexpr auto newl = '\n';
 
 void stem(std::string &str);
 
